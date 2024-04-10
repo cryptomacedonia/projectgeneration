@@ -21,8 +21,17 @@ jobs:
     - name: Generate Xcode Project
       run: xcodegen generate -s project_temp.yml
 
+    - name: Find Xcode Project File
+      id: find_project
+      run: |
+        PROJECT_PATH=$(find . -name '*.xcodeproj' -print -quit)
+        echo "PROJECT_PATH=$PROJECT_PATH" >> $GITHUB_ENV
+        PROJECT_NAME=$(basename "$PROJECT_PATH")
+        echo "::set-output name=project_name::$PROJECT_NAME"
+
     - name: Archive Project
-      run: zip -r generated-project.zip ./GeneratedProject  # Adjust path as needed
+      run: |
+        zip -r "${{ steps.find_project.outputs.project_name }}.zip" "${{ env.PROJECT_PATH }}"
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
