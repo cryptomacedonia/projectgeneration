@@ -33,9 +33,9 @@ jobs:
       run: |
         zip -r "${{ steps.find_project.outputs.project_name }}.zip" "${{ env.PROJECT_PATH }}"
 
-    - name: Upload Artifact
+    - name: Upload ZIP as Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: Generated-Project
-        path: generated-project.zip
+        name: project-zip
+        path: ${{ steps.find_project.outputs.project_name }}.zip
 
