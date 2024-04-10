@@ -1,0 +1,32 @@
+name: Generate Xcode Project
+
+on:
+  push:
+    branches:
+      - main  # or any branch you want to trigger this workflow
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest
+
+    - name: Install XcodeGen
+      run: brew install xcodegen
+
+    - name: Generate Xcode Project
+      run: xcodegen generate -s project_temp.yml
+
+    - name: Archive Project
+      run: zip -r generated-project.zip ./GeneratedProject  # Adjust path as needed
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Generated-Project
+        path: generated-project.zip
+
